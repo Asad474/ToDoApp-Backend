@@ -4,6 +4,8 @@ const apiroutes = (req, res) => {
     return res.status(200).json([
         'POST /api/login',
         'POST /api/register',
+        'POST /api/refresh',
+        'DELETE /api/refresh',
         'GET /api/tasks',
         'POST /api/tasks',
         'GET /api/task/:id',
