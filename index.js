@@ -21,7 +21,7 @@ app.use(cors({
 }));
 
 app.get('/', (req, res) => {
-    res.status.json({
+    res.status(200).json({
         'POST /api/user/login': 'Used for user login.',
         'POST /api/user/register': 'Used for user registration.',
         'POST /api/refresh': 'Used for refreshing access tokens.',
