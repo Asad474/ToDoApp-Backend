@@ -1,79 +1,71 @@
+const asyncHandler = require('express-async-handler');
+
 const User = require('../models/usermodel');
-const bcrypt = require('bcrypt');
 const generateToken = require('../utils/generateToken');
 
-const loginuser = async(req, res) => {
-    try{
-        const {email, password} = req.body;
+const loginuser = asyncHandler(async(req, res) => {
+    const {email, password} = req.body;
 
-        if (!(email && password)){
-            return res.status(400).json('All inputs are required.');
-        } 
+    if (!(email && password)){
+        res.status(400);
+        throw new Error('All input details are required.');
+    } 
 
-        const user = await User.findOne({email});
-        if (!user){
-            return res.status(200).json('User does not exist.');
-        }
+    const user = await User.findOne({email});
 
-        if (user.email && (await bcrypt.compare(password, user.password))){
-            const {access_token, refresh_token} = await generateToken(user.id);
-
-            return res.status(200).json({
-                _id: user.id,
-                username: user.username,
-                email: user.email, 
-                access_token,
-                refresh_token
-            });
-        }
-
-    } catch(err){
-        console.log(err);
-        return res.status(500).json('Internal Server Error.');
+    if (!user){
+        res.status(400);
+        throw new Error('User does not exist.');
     }
-}
 
-const registeruser = async(req, res) => {
-    try{
-        const {username, email, password} = req.body;
-        console.log(username, email, password);
+    if (user.email && await user.matchPassword(password)){
+        const {access_token, refresh_token} = await generateToken(user.id);
 
-        if (!(username && email && password)){
-            return res.status(400).json('All inputs are required.');
-        }
+        return res.status(200).json({
+            _id: user.id,
+            name: user.name,
+            email: user.email, 
+            access_token,
+            refresh_token
+        });
+    } else{
+        res.status(400);
+        throw new Error('Invalid Email or Password.');
+    }    
+});
 
-        const usr = await User.findOne({username});
-        if (usr){
-            return res.status(400).json('User with this username already exists.');
-        } 
 
-        const oldUser = await User.findOne({email});
-        if (oldUser){
-            return res.status(400).json('User already registered. Please login');
-        }
+const registeruser = asyncHandler(async(req, res) => {
+    const {name, email, password} = req.body;
 
-        const salt = await bcrypt.genSalt(10);
-        const hashedpassword = await bcrypt.hash(password, salt);    
-
-        const user = await User.create({username, email, password: hashedpassword});
-        if (user){
-            return res.status(200).json({
-                _id: user.id,
-                username: user.username,
-                email: user.email,
-            });
-        }
-
-        return res.status(400).json('Something went to wrong!!!');   
+    if (!(name && email && password)){
+        res.status(400);
+        throw new Error('All inputs are required.');
     }
-    catch(err){
-        console.log(err);
-        return res.status(500).json('Internal Server Error.')
-    }
-}
+
+    const oldUser = await User.findOne({ email });
+
+    if (oldUser){
+        res.status(400);
+        throw new Error('User already registered. Please login');
+    };
+
+    const user = await User.create({name, email, password});
+
+    if (user){
+        return res.status(200).json({
+            _id: user.id,
+            name: user.name,
+            email: user.email,
+        });
+    } else{
+        res.status(400);
+        throw new Error('Invalid User data!!!');   
+    };
+});
 
 
 module.exports = {
     loginuser,
-    registeruser
+    registeruser,
 };

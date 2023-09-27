@@ -1,5 +1,6 @@
-const verifyRefreshToken = require('../utils/verifyRefreshToken');
 const jwt = require('jsonwebtoken');
+
+const verifyRefreshToken = require('../utils/verifyRefreshToken');
 const UserToken = require('../models/usertokenmodel');
 
 const newAccessToken = async(req, res) => {

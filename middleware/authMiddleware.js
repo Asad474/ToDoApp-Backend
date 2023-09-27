@@ -21,5 +21,5 @@ module.exports = async(req, res, next) => {
 
     if (!token){
         return res.status(401).json('Not Authorized, no token.');
-    }
+    };
 }

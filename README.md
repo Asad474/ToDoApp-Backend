@@ -1,4 +1,46 @@
-# API Routes
+# Backend Setup
+
+
+## Getting Started
+
+
+### 1. Install package dependencies
+
+In the `root` directory, run:
+
+```bash
+$ npm install
+```
+
+
+### 2. Adding environment variables to .env file
+```bash
+NODE_ENV='development(if running locally)'
+MONGODB_URI='Your MongoDB localhost or cluster url.'
+PORT='Any Port No(eg: 8080, 8050 etc)'
+ACCESSTOKEN_SECRET='secret should be a long, random string of characters. Longer secrets are generally more secure than shorter ones.'
+REFRESHTOKEN_SECRET='secret should be a long, random string of characters. Longer secrets are generally more secure than shorter ones.'
+```
+
+You can create ACCESSTOKEN_SECRET and REFRESHTOKEN_SECRET by using following commands in node terminal:
+
+```bash
+$ require('crypto').randomBytes(64).toString('hex')
+```
+
+Make sure both secrets should be different.
+
+
+### 3. Start Backend Server
+
+To start backend server, run: 
+
+```bash
+$ npm run server
+```
+
+
+## API Routes
 
 - `POST /api/login`: Used for user login.
 - `POST /api/register`: Used for user registration.
