@@ -20,6 +20,10 @@ app.use(cors({
     origin: 'http://localhost:3000',
 }));
 
+app.get('/', (req, res) => {
+    res.status.json({message: 'API for ToDoList App'});
+});
+
 app.use('/api/user', userroutes);
 app.use('/api/tasks', taskroutes);
 app.use('/api/refresh', refreshtokenroutes);
